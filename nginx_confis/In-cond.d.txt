@@ -1,0 +1,46 @@
+  
+
+# files 1 - my_server_1 :: for reverse-proxy the request : 
+server { 
+   
+    listen 80 ;
+    server_name 127.0.0.1; 
+
+
+    location /content { 
+
+        alias /home/../../../nginx_00/index.html ;
+    }
+
+    location / { 
+
+        # proxy it to the django server which is listening on port 8000
+        proxy_pass http://127.0.0.1:8000 ;
+    }
+
+
+
+}
+
+  # files 2 - my_server_2 :: for static files serving  : 
+    server { 
+        listen 5000 ; 
+        server_name 127.0.0.1:5000;
+      
+        
+        location / { 
+
+            alias /home/../../../nginx_00/ ; # assets folder
+
+            try_files $uri $uri/ =404 ;    # serve dynamically what is requested
+        }
+
+       
+    }
+
+
+
+# NOTE : Dont change in the main nginx.conf .... u have ur things for each serverin 
+the conf.d 
+
+# include : is used to add each piece (each server adn its setup)to the  main conf later on 
